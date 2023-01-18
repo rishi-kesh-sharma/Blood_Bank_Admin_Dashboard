@@ -1,7 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../constants/constants";
 export const getAllBanks = async (keyword, page) => {
-  console.log(keyword, page);
   const response = await axios.get(
     `${BASE_URL}/bank/all?keyword=${keyword}&page=${page}`,
     {
@@ -10,6 +9,14 @@ export const getAllBanks = async (keyword, page) => {
       },
     }
   );
+  return response.data;
+};
+export const registerBank = async (data) => {
+  const response = await axios.post(`${BASE_URL}/bank/admin/register`, data, {
+    headers: {
+      "auth-token": localStorage.getItem("auth-token"),
+    },
+  });
   return response.data;
 };
 export const updateBank = async (bankId, data) => {

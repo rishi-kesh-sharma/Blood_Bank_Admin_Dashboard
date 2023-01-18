@@ -32,8 +32,8 @@ const columns = [
   { id: "category", label: "Category", minWidth: 100 },
   { id: "website", label: "Website", minWidth: 100 },
   { id: "socials", label: "Socials", minWidth: 100 },
-  { id: "edit", label: "edit", minWidth: 50 },
-  { id: "remove", label: "remove", minWidth: 50 },
+  { id: "edit", label: "Edit", minWidth: 50 },
+  { id: "remove", label: "Remove", minWidth: 50 },
 ];
 
 function createData(
@@ -102,7 +102,7 @@ export default function BanksTable({ currentPage }) {
       _id,
       profilePic,
     } = bank;
-    const { facebook, instagram, twitter, linkedin } = socialMediaHandles;
+    // const { facebook, instagram, twitter, linkedin } = socialMediaHandles && socialMediaHandles;
     return createData(
       (currentPage - 1) * banksInfo.banks.length + index + 1,
       profilePic,
@@ -117,9 +117,10 @@ export default function BanksTable({ currentPage }) {
           name: "facebook",
           link: (
             <a
-              key={facebook}
-              href={facebook}
-              style={{ margin: "0 0.4rem", textDecoration: "none" }}>
+              key={socialMediaHandles?.facebook || "facebook"}
+              href={socialMediaHandles?.facebook}
+              style={{ margin: "0.1rem", textDecoration: "none" }}
+            >
               <FacebookIcon />
             </a>
           ),
@@ -128,9 +129,10 @@ export default function BanksTable({ currentPage }) {
           name: "twitter",
           link: (
             <a
-              key={twitter}
-              href={twitter}
-              style={{ margin: "0 0.4rem", textDecoration: "none" }}>
+              key={socialMediaHandles?.twitter || "twitter"}
+              href={socialMediaHandles?.facebook}
+              style={{ margin: "0.1rem", textDecoration: "none" }}
+            >
               <TwitterIcon />
             </a>
           ),
@@ -139,9 +141,10 @@ export default function BanksTable({ currentPage }) {
           name: "instagram",
           link: (
             <a
-              key={instagram}
-              href={instagram}
-              style={{ margin: "0 0.4rem", textDecoration: "none" }}>
+              key={socialMediaHandles?.instagram || "instagram"}
+              href={socialMediaHandles?.facebook}
+              style={{ margin: "0.1rem", textDecoration: "none" }}
+            >
               <InstagramIcon />
             </a>
           ),
@@ -150,9 +153,10 @@ export default function BanksTable({ currentPage }) {
           name: "linkedin",
           link: (
             <a
-              key={linkedin}
-              href={linkedin}
-              style={{ margin: "0 0.4rem", textDecoration: "none" }}>
+              key={socialMediaHandles?.linkedin || "linkedin"}
+              href={socialMediaHandles?.facebook}
+              style={{ margin: "0.1rem", textDecoration: "none" }}
+            >
               <LinkedInIcon />
             </a>
           ),
@@ -169,7 +173,8 @@ export default function BanksTable({ currentPage }) {
           padding: "0.2rem 0.5rem",
           cursor: "pointer",
           borderRadius: "0.4rem",
-        }}>
+        }}
+      >
         edit
       </button>,
       <button
@@ -181,7 +186,8 @@ export default function BanksTable({ currentPage }) {
           padding: "0.2rem 0.5rem",
           cursor: "pointer",
           borderRadius: "0.4rem",
-        }}>
+        }}
+      >
         remove
       </button>
     );
@@ -193,11 +199,12 @@ export default function BanksTable({ currentPage }) {
         width: "80vw",
         maxWidth: "3000px",
         overflow: "hidden",
-        marginTop: "2rem",
+        marginTop: "5rem",
         marginLeft: "17vw",
         // padding: "0 2rem",
         overflow: "hidden",
-      }}>
+      }}
+    >
       <TableContainer sx={{ maxHeight: 450, overflow: "auto" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -206,7 +213,8 @@ export default function BanksTable({ currentPage }) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}>
+                  style={{ minWidth: column.minWidth }}
+                >
                   {column.label}
                 </TableCell>
               ))}
@@ -216,14 +224,20 @@ export default function BanksTable({ currentPage }) {
             {rows &&
               rows?.map((row, index) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={(currentPage - 1) * banksInfo.banks.length + index + 1}
+                  >
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
                         <TableCell
-                          sx={{ padding: "6px" }}
+                          // sx={{ padding: "6px" }}
                           key={column.id}
-                          align={column.align}>
+                          align="left"
+                        >
                           {typeof value == "object" && Array.isArray(value) ? (
                             <div style={{ display: "flex" }}>
                               {value.map((item) => item.link)}

@@ -9,8 +9,7 @@ import Pagination from "./Pagination";
 
 const Banks = () => {
   // const [searchQuery, setSearchQuery] = useState("");
-  const [searchQuery] = useOutletContext();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, currentPage, setCurrentPage] = useOutletContext();
   const dispatch = useDispatch();
   useEffect(() => {
     const getBanksInfo = async () => {

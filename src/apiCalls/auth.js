@@ -41,6 +41,5 @@ export const checkTokenValidity = async () => {
   } catch (err) {
     console.log(err);
     return { isValid: false };
-    // return err.response;
   }
 };

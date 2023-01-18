@@ -18,10 +18,11 @@ const Overview = () => {
         alignItems: "start",
         gap: "2rem",
         justifyContent: "center",
-        marginTop: "6rem",
+        marginTop: "5rem",
         marginLeft: "25vw",
         minHeight: "100vh",
-      }}>
+      }}
+    >
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
           <Typography variant="h5" sx={{ textAlign: "center" }} component="div">
@@ -29,7 +30,8 @@ const Overview = () => {
           </Typography>
           <Typography
             sx={{ mb: 1.5, mt: "1rem", textAlign: "center" }}
-            color="text.secondary">
+            color="text.secondary"
+          >
             {overview.totalBanks}
           </Typography>
         </CardContent>
@@ -41,7 +43,8 @@ const Overview = () => {
           </Typography>
           <Typography
             sx={{ mb: 1.5, mt: "1rem", textAlign: "center" }}
-            color="text.secondary">
+            color="text.secondary"
+          >
             {overview.totalUsers}
           </Typography>
         </CardContent>

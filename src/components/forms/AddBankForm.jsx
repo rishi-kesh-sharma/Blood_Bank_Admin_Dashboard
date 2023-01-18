@@ -1,11 +1,11 @@
 import { Formik, Form } from "formik";
 import React from "react";
 import * as Yup from "yup";
-import { updateBank } from "../../apiCalls/banks";
+import { registerBank } from "../../apiCalls/banks";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_BANKS } from "../../actions/bankActions";
+import { ADD_BANK, SET_BANKS } from "../../actions/bankActions";
 
-const BankUpdateForm = ({ editingUserId, setOpen }) => {
+const AddBankForm = ({}) => {
   const dispatch = useDispatch();
   const banksInfo = useSelector((state) => state?.bankReducer);
   let initialValues = {
@@ -15,26 +15,11 @@ const BankUpdateForm = ({ editingUserId, setOpen }) => {
     category: "",
     website: "",
     address: "",
+    organizationName: "",
+    estd: "",
+    // socialMediaHandles: "",
+    website: "",
   };
-  console.log(editingUserId);
-  if (editingUserId) {
-    const editingBank = banksInfo?.banks?.find(
-      (bank) => bank._id == editingUserId
-    );
-    if (editingBank) {
-      const { email, bankname, contact, category, website, address } =
-        editingBank;
-      initialValues = {
-        email,
-        bankname,
-        contact,
-        category,
-        website,
-        address,
-      };
-    }
-  }
-  // if (editingUserId) {
 
   const schema = Yup.object().shape({
     bankname: Yup.string().required(),
@@ -42,22 +27,19 @@ const BankUpdateForm = ({ editingUserId, setOpen }) => {
     email: Yup.string().required().email("Invalid email format"),
     contact: Yup.string().required(),
     category: Yup.string().required(),
-    website: Yup.string().required(),
+    website: Yup.string(),
+    organizationName: Yup.string().required(),
+    estd: Yup.string().required(),
+    // socialMediaHandles: Yup.string(),
   });
 
   const submitForm = async (values) => {
-    const banks = banksInfo?.banks?.map((bank) => {
-      if (bank._id == editingUserId) {
-        return { ...bank, ...values };
-      }
-      return bank;
-    });
-    const response = await updateBank(editingUserId, values);
-    dispatch({ type: SET_BANKS, payload: { ...banksInfo, banks } });
-    setOpen(false);
+    console.log(values);
+    const response = await registerBank(values);
+    dispatch({ type: ADD_BANK, payload: values });
   };
   return (
-    <div>
+    <div className="w-[60%] max-w-[550px]">
       <Formik
         validationSchema={schema}
         initialValues={initialValues}
@@ -92,6 +74,53 @@ const BankUpdateForm = ({ editingUserId, setOpen }) => {
                   {(errors.bankname && touched.bankname && errors.bankname) ||
                     (isSubmitting && errors.bankname)}
                 </p>
+                <input
+                  type="text"
+                  name="organizationName"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.organizationName}
+                  placeholder="Enter organizationName"
+                  className="form-control"
+                  style={{ padding: "10px" }}
+                />
+                {/* If validation is not passed show errors */}
+                <p className="error">
+                  {(errors.organizationName &&
+                    touched.organizationName &&
+                    errors.organizationName) ||
+                    (isSubmitting && errors.organizationName)}
+                </p>
+                <input
+                  type="text"
+                  name="estd"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.estd}
+                  placeholder="Enter estd"
+                  className="form-control"
+                  style={{ padding: "10px" }}
+                />
+                {/* If validation is not passed show errors */}
+                <p className="error">
+                  {(errors.estd && touched.estd && errors.estd) ||
+                    (isSubmitting && errors.estd)}
+                </p>
+                {/* <input
+                  type="text"
+                  name="socialMediaHandles"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.socialMediaHandles}
+                  placeholder="Enter socialMediaHandles"
+                  className="form-control"
+                  style={{ padding: "10px" }}
+                />
+                 If validation is not passed show errors 
+                <p className="error">
+                  {(errors.socialMediaHandles && touched.socialMediaHandles && errors.socialMediaHandles) ||
+                    (isSubmitting && errors.socialMediaHandles)}
+                </p> */}
                 <input
                   type="email"
                   name="email"
@@ -183,4 +212,4 @@ const BankUpdateForm = ({ editingUserId, setOpen }) => {
   );
 };
 
-export default BankUpdateForm;
+export default AddBankForm;

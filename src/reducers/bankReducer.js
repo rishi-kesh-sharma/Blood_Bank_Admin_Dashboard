@@ -14,7 +14,7 @@ const bankReducer = (state = [], action) => {
     case UPDATE_BANK:
       return state;
     case ADD_BANK:
-      return state;
+      return [...state, action.payload];
     case UPDATE_BANK:
       return state;
     case DELETE_BANK:

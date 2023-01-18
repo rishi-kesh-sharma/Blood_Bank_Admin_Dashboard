@@ -8,6 +8,8 @@ import { SET_OVERVIEW } from "../actions/overviewActions";
 import { getOverview } from "../apiCalls/misc";
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
   const dispatch = useDispatch();
   React.useEffect(() => {
     const getOverviews = async () => {
@@ -34,11 +36,17 @@ const Dashboard = () => {
           <Box
             bgcolor={"background.default"}
             color={"text.primary"}
-            sx={{ minHeight: "100vh" }}>
-            <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            sx={{ minHeight: "100vh" }}
+          >
+            <Navbar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
             <Stack direction="row" gap="1rem" overflow={"hidden"}>
               <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
-              <Outlet context={[searchQuery]} />
+              <Outlet context={[searchQuery, currentPage, setCurrentPage]} />
             </Stack>
           </Box>
         </ThemeProvider>

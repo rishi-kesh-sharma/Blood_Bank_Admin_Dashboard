@@ -3,12 +3,14 @@
 body {
   background: linear-gradient(90deg, #260107 0%, #5f0812 100%);
 }
-
+* {
+  font-family: "Poppins", sans-serif;
+}
 .login {
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
-  font-family: "Comfortaa", cursive;
+  font-family: "Poppins", sans-serif;
 }
 
 .form {
@@ -32,7 +34,6 @@ body {
   padding: 15px;
   box-sizing: border-box;
   font-size: 14px;
-  font-family: "Comfortaa", cursive;
 }
 
 .form input:focus {
@@ -40,7 +41,6 @@ body {
 }
 
 .form button {
-  font-family: "Comfortaa", cursive;
   text-transform: uppercase;
   outline: 0;
   background: #4b6cb7;

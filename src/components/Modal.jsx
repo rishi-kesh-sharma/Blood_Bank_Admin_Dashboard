@@ -11,7 +11,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  height: "90vh",
+  maxHeight: "90vh",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -31,7 +31,8 @@ export default function KeepMountedModal({ open, setOpen, children }) {
         open={open}
         onClose={handleClose}
         aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description">
+        aria-describedby="keep-mounted-modal-description"
+      >
         <Box sx={style}>{children}</Box>
       </Modal>
     </div>

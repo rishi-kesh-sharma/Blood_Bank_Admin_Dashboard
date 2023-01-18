@@ -58,18 +58,14 @@ const Login = () => {
     } catch (err) {}
   };
 
-  // const { isAuthenticated } = useSelector((state) => state.authReducer);
-  // if (isAuthenticated) return <Navigate to="/dashboard" />;
-  // if (tokenValidity) navigate("/dashboard");
-  // if (tokenValidity) return <Navigate to="/dashboard" />;
-
   return (
     <>
       {/* Wrapping form inside formik tag and passing our schema to validationSchema prop */}
       <Formik
         validationSchema={schema}
         initialValues={{ email: "", password: "" }}
-        onSubmit={submitForm}>
+        onSubmit={submitForm}
+      >
         {({
           values,
           errors,

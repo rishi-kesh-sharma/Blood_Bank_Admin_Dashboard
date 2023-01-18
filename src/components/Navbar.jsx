@@ -35,7 +35,12 @@ const Actions = styled(Box)(({ theme }) => ({
   },
 }));
 
-const Navbar = ({ searchQuery, setSearchQuery }) => {
+const Navbar = ({
+  searchQuery,
+  setSearchQuery,
+  currentPage,
+  setCurrentPage,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +63,8 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
         <Typography
           variant="h6"
           fontWeight={600}
-          sx={{ display: { xs: "none", sm: "block" } }}>
+          sx={{ display: { xs: "none", sm: "block" }, marginLeft: "1rem" }}
+        >
           Blood Bank
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
@@ -66,6 +72,8 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
         )}
 
@@ -73,7 +81,8 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
         <Actions>
           <button
             className="bg-white text-red-600 px-[0.5rem] py-[0.15rem] rounded "
-            onClick={handleLogoutClick}>
+            onClick={handleLogoutClick}
+          >
             Logout
           </button>
         </Actions>

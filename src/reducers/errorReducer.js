@@ -7,6 +7,6 @@ export const errorReducer = (state = [], action) => {
     case REMOVE_ERROR:
       return [...state].filter((error) => error.id != action.payload);
     default:
-        return state
+      return state;
   }
 };
