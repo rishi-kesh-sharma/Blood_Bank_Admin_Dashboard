@@ -19,6 +19,7 @@ const Overview = () => {
         gap: "2rem",
         justifyContent: "center",
         marginTop: "6rem",
+        marginLeft: "25vw",
         minHeight: "100vh",
       }}>
       <Card sx={{ minWidth: 275 }}>

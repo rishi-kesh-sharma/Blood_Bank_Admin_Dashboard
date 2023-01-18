@@ -34,9 +34,11 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
       p={1}
       sx={{
         display: { xs: "none", sm: "block" },
-        width: "400px",
+        width: "15vw",
+        maxWidth: "150px",
         height: "100vh",
-        maxWidth: "20%",
+        maxWidth: "25%",
+        position: "fixed",
         borderRight: "1px solid #c9c8c7 ",
       }}>
       <Box>

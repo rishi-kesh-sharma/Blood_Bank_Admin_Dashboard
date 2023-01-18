@@ -16,21 +16,15 @@ import {
   menuItemClasses,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LOGOUT } from "../actions/authActions";
 import { logoutUser } from "../apiCalls/auth";
+import SearchBar from "./SearchBar";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between",
 });
-
-const SearchBar = styled("div")(({ theme }) => ({
-  backgroundColor: "rgba(0,0,0,0.2)",
-  padding: "0 10px",
-  borderRadius: theme.shape.borderRadius,
-  width: "40%",
-}));
 
 const Actions = styled(Box)(({ theme }) => ({
   display: "none",
@@ -41,22 +35,10 @@ const Actions = styled(Box)(({ theme }) => ({
   },
 }));
 
-const UserBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: "10px",
-  [theme.breakpoints.up("sm")]: {
-    display: "none",
-  },
-}));
-
-const Navbar = () => {
+const Navbar = ({ searchQuery, setSearchQuery }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-
-  const openMenu = () => setOpen(true);
-  const closeMenu = () => setOpen(false);
+  const location = useLocation();
 
   const handleLogoutClick = async (e) => {
     const response = await logoutUser();
@@ -77,18 +59,23 @@ const Navbar = () => {
           variant="h6"
           fontWeight={600}
           sx={{ display: { xs: "none", sm: "block" } }}>
-          {"<JohnKoder />"}
+          Blood Bank
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
-
-        {/* searchbar */}
-        <SearchBar>
-          <InputBase placeholder="Search..." />
-        </SearchBar>
+        {location.pathname == "/dashboard/banks" && (
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        )}
 
         {/* actions */}
         <Actions>
-          <button onClick={handleLogoutClick}>Logout</button>
+          <button
+            className="bg-white text-red-600 px-[0.5rem] py-[0.15rem] rounded "
+            onClick={handleLogoutClick}>
+            Logout
+          </button>
         </Actions>
       </StyledToolbar>
     </AppBar>

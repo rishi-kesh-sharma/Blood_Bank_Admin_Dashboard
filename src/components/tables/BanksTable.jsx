@@ -63,7 +63,7 @@ function createData(
     remove,
   };
 }
-export default function BanksTable() {
+export default function BanksTable({ currentPage }) {
   const [open, setOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
   const dispatch = useDispatch();
@@ -73,8 +73,6 @@ export default function BanksTable() {
 
   const banksInfo = useSelector((state) => state?.bankReducer);
 
-  const handlePrevClick = () => {};
-  const handleNextClick = () => {};
   const handleEdit = async (_id) => {
     setOpen(true);
     setEditingUserId(_id);
@@ -106,13 +104,13 @@ export default function BanksTable() {
     } = bank;
     const { facebook, instagram, twitter, linkedin } = socialMediaHandles;
     return createData(
-      index + 1,
+      (currentPage - 1) * banksInfo.banks.length + index + 1,
       profilePic,
       bankname,
       address,
       email,
       contact,
-      category[0],
+      category,
       website,
       [
         {
@@ -190,72 +188,84 @@ export default function BanksTable() {
   });
 
   return (
-    // <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "5rem" }}>
-    //   <TableContainer sx={{ maxHeight: 500 }}>
-    //     <Table stickyHeader aria-label="sticky table">
-    //       <TableHead>
-    //         <TableRow>
-    //           {columns.map((column) => (
-    //             <TableCell
-    //               key={column.id}
-    //               align={column.align}
-    //               style={{ minWidth: column.minWidth }}>
-    //               {column.label}
-    //             </TableCell>
-    //           ))}
-    //         </TableRow>
-    //       </TableHead>
-    //       <TableBody>
-    //         {rows &&
-    //           rows?.map((row, index) => {
-    //             return (
-    //               <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-    //                 {columns.map((column) => {
-    //                   const value = row[column.id];
-    //                   return (
-    //                     <TableCell key={column.id} align={column.align}>
-    //                       {typeof value == "object" && Array.isArray(value) ? (
-    //                         <div style={{ display: "flex" }}>
-    //                           {value.map((item) => item.link)}
-    //                         </div>
-    //                       ) : (
-    //                         value
-    //                       )}
-    //                     </TableCell>
-    //                   );
-    //                 })}
-    //               </TableRow>
-    //             );
-    //           })}
-    //       </TableBody>
-    //     </Table>
-    //   </TableContainer>
-    //   <div
-    //     style={{
-    //       margin: " 0.5rem 0 0.5rem 90% ",
-    //       display: "flex",
-    //       gap: "1.5rem",
-    //     }}>
-    //     <ArrowBackIosNewIcon
-    //       sx={{ fontSize: "1.2rem", cursor: "pointer" }}
-    //       onClick={handlePrevClick}
-    //     />
-    //     <ArrowForwardIosIcon
-    //       sx={{ fontSize: "1.2rem", cursor: "pointer" }}
-    //       onClick={handleNextClick}
-    //     />
-    //   </div>
-    //   <>
-    //     {/* <Button variant="primary" onClick={() => setModalShow(true)}></Button> */}
-    //     <KeepMountedModal open={open} setOpen={setOpen}>
-    //       <BankUpdateForm editingUserId={editingUserId} />
-    //     </KeepMountedModal>
-    //   </>
-    // </Paper>
-    <div>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, culpa!
-      Aperiam, esse perferendis facere quaerat sapiente, aut ipsam ratione iure
-      fugiat aliquid veniam optio vitae, dolore accusamus similique fuga! Quos.
-    </div>
+    <Paper
+      sx={{
+        width: "80vw",
+        maxWidth: "3000px",
+        overflow: "hidden",
+        marginTop: "2rem",
+        marginLeft: "17vw",
+        // padding: "0 2rem",
+        overflow: "hidden",
+      }}>
+      <TableContainer sx={{ maxHeight: 450, overflow: "auto" }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows &&
+              rows?.map((row, index) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell
+                          sx={{ padding: "6px" }}
+                          key={column.id}
+                          align={column.align}>
+                          {typeof value == "object" && Array.isArray(value) ? (
+                            <div style={{ display: "flex" }}>
+                              {value.map((item) => item.link)}
+                            </div>
+                          ) : (
+                            value
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* <div
+        style={{
+          margin: " 0.5rem 0 0.5rem 90% ",
+          display: "flex",
+          gap: "1.5rem",
+        }}>
+        <ArrowBackIosNewIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handlePrevClick}
+        />
+        <ArrowForwardIosIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handleNextClick}
+        />
+      </div> */}
+      <>
+        {/* <Button variant="primary" onClick={() => setModalShow(true)}></Button> */}
+        <KeepMountedModal open={open} setOpen={setOpen}>
+          <BankUpdateForm editingUserId={editingUserId} setOpen={setOpen} />
+        </KeepMountedModal>
+      </>
+    </Paper>
+    // <div>
+    //   Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, culpa!
+    //   Aperiam, esse perferendis facere quaerat sapiente, aut ipsam ratione iure
+    //   fugiat aliquid veniam optio vitae, dolore accusamus similique fuga! Quos.
+    // </div>
   );
 }

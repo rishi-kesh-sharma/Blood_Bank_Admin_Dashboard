@@ -2,9 +2,11 @@ import { Formik, Form } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import { updateBank } from "../../apiCalls/banks";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_BANKS } from "../../actions/bankActions";
 
-const BankUpdateForm = ({ editingUserId }) => {
+const BankUpdateForm = ({ editingUserId, setOpen }) => {
+  const dispatch = useDispatch();
   const banksInfo = useSelector((state) => state?.bankReducer);
   let initialValues = {
     email: "",
@@ -28,7 +30,6 @@ const BankUpdateForm = ({ editingUserId }) => {
       website,
       address,
     };
-    console.log(editingBank);
   }
   // if (editingUserId) {
 
@@ -42,8 +43,16 @@ const BankUpdateForm = ({ editingUserId }) => {
   });
 
   const submitForm = async (values) => {
-    // const updatedBanks=
-    // const response = await updateBank(_id, values);
+    const banks = banksInfo?.banks?.map((bank) => {
+      if (bank._id == editingUserId) {
+        return { ...bank, ...values };
+      }
+      return bank;
+    });
+    const response = await updateBank(editingUserId, values);
+    console.log(response);
+    dispatch({ type: SET_BANKS, payload: { ...banksInfo, banks } });
+    setOpen(false);
   };
   return (
     <div>
@@ -51,8 +60,7 @@ const BankUpdateForm = ({ editingUserId }) => {
         validationSchema={schema}
         initialValues={initialValues}
         onSubmit={submitForm}
-        enableReinitialize
-      >
+        enableReinitialize>
         {({
           values,
           errors,
@@ -61,10 +69,10 @@ const BankUpdateForm = ({ editingUserId }) => {
           handleBlur,
           isSubmitting,
         }) => (
-          <div className="update-bank">
-            <div className="form" style={{ maxWidth: "100%" }}>
+          <div className="update-bank ">
+            <div className="form " style={{ maxWidth: "100%", padding: 0 }}>
               {/* Passing handleSubmit parameter tohtml form onSubmit property */}
-              <Form>
+              <Form style={{ padding: "0" }}>
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
                   type="text"
@@ -74,6 +82,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                   value={values.bankname}
                   placeholder="Enter bankname"
                   className="form-control"
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -89,6 +98,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                   placeholder="Enter email "
                   className="form-control "
                   id="email"
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -104,6 +114,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                   value={values.address}
                   placeholder="Enter address"
                   className="form-control"
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -119,6 +130,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                   value={values.contact}
                   placeholder="Enter contact"
                   className="form-control"
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -134,6 +146,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                   value={values.category}
                   placeholder="Enter category"
                   className="form-control"
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -148,7 +161,8 @@ const BankUpdateForm = ({ editingUserId }) => {
                   onBlur={handleBlur}
                   value={values.website}
                   placeholder="Enter website"
-                  className="form-control"
+                  className="form-control "
+                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
                 <p className="error">
@@ -156,9 +170,7 @@ const BankUpdateForm = ({ editingUserId }) => {
                     (isSubmitting && errors.website)}
                 </p>
                 {/* Click on submit button to submit the form */}
-                <button style={{ paddingTop: "2rem" }} type="submit">
-                  Save
-                </button>
+                <button type="submit p-0">Save</button>
               </Form>
             </div>
           </div>
