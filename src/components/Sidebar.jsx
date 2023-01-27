@@ -20,16 +20,19 @@ import {
 } from "@mui/icons-material";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import { red } from "@mui/material/colors";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const Sidebar = ({ toogleThemeMode, themeMode }) => {
+  const location = useLocation();
+  console.log(location.pathname);
+
   let links = [
-    { icon: <Home />, title: "Overview", path: "/dashboard" },
-    { icon: <AccountBalance />, title: "Banks", path: "/dashboard/banks" },
+    { icon: <Home />, title: "Overview", path: "/", isActive: true },
     {
       icon: <AccountBalance />,
-      title: "Add  ",
-      path: "/dashboard/addBank",
+      title: "Banks",
+      path: "/banks",
+      isActive: false,
     },
   ];
 
@@ -43,14 +46,25 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
         maxWidth: "25%",
         position: "fixed",
         borderRight: "1px solid #c9c8c7 ",
-        paddingTop: "3.2rem",
+        paddingTop: "2rem",
+        background: "#fafafc",
+        boxShadow: "5px 10px 20px #b8b8b8",
       }}
     >
       <Box>
         <List sx={{ width: "100%" }}>
           {links.map(({ title, icon, path }, index) => (
-            <ListItem key={index} sx={{ width: "100%", marginX: "auto" }}>
-              <Link to={path} style={{ textDecoration: "none", color: "red" }}>
+            <ListItem key={index} sx={{ width: "100%" }}>
+              <Link
+                to={path}
+                style={{
+                  textDecoration: "none",
+                  color: "#bf0212",
+                  display: "inline-block",
+                  width: "100%",
+                }}
+                className={`${location.pathname == path && "active-link"} `}
+              >
                 <ListItemButton
                   sx={{
                     width: "100%",
@@ -73,14 +87,14 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
           ))}
 
           {/* THEME MODE TOGGLER */}
-          <ListItem disablePadding>
+          {/* <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon sx={{ justifyContent: "center", gap: 0 }}>
                 {themeMode === "dark" ? <ModeNight /> : <LightMode />}
               </ListItemIcon>
               <Switch onChange={toogleThemeMode} sx={{ marginLeft: "-15px" }} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
       </Box>
     </Box>

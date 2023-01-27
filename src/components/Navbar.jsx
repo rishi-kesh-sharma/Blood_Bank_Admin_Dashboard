@@ -14,9 +14,10 @@ import {
   Menu,
   MenuItem,
   menuItemClasses,
+  Breadcrumbs,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { LOGOUT } from "../actions/authActions";
 import { logoutUser } from "../apiCalls/auth";
 import SearchBar from "./SearchBar";
@@ -35,12 +36,7 @@ const Actions = styled(Box)(({ theme }) => ({
   },
 }));
 
-const Navbar = ({
-  searchQuery,
-  setSearchQuery,
-  currentPage,
-  setCurrentPage,
-}) => {
+const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +53,15 @@ const Navbar = ({
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar
+      position="sticky"
+      sx={{
+        height: "5rem",
+        paddingY: "0.7rem",
+        zIndex: 1,
+        background: "#bf0212",
+      }}
+    >
       <StyledToolbar>
         {/* brandname */}
         <Typography
@@ -68,19 +72,28 @@ const Navbar = ({
           Blood Bank
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
-        {location.pathname == "/dashboard/banks" && (
-          <SearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )}
+        <Breadcrumbs aria-label="breadcrumb">
+          {/* {location.pathname.split("/").map((item) => {
+            return (
+              <Link
+                underline="hover"
+                color="inherit"
+                to={`${item}`}
+                style={{ color: "white" }}
+              >
+                {item}
+              </Link>
+            );
+          })} */}
+          <p className="text-white text-lg">{`/dashboard${
+            location.pathname == "/" ? "/overview" : location.pathname
+          }`}</p>
+        </Breadcrumbs>
 
         {/* actions */}
         <Actions>
           <button
-            className="bg-white text-red-600 px-[0.5rem] py-[0.15rem] rounded "
+            className="bg-gray-100 text-red-600 px-[0.5rem] py-[0.15rem] rounded "
             onClick={handleLogoutClick}
           >
             Logout

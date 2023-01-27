@@ -1,14 +1,21 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { getOverview } from "../apiCalls/misc";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_OVERVIEW } from "../actions/overviewActions";
+import { useEffect } from "react";
 const Overview = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const getOverviews = async () => {
+      const overviews = await getOverview();
+      dispatch({ type: SET_OVERVIEW, payload: overviews });
+    };
+    getOverviews();
+  }, []);
   const overview = useSelector((state) => state.overviewReducer);
   return (
     <div
@@ -18,7 +25,7 @@ const Overview = () => {
         alignItems: "start",
         gap: "2rem",
         justifyContent: "center",
-        marginTop: "5rem",
+        marginTop: "6rem",
         marginLeft: "25vw",
         minHeight: "100vh",
       }}

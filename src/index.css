@@ -22,3 +22,14 @@
   margin: 0;
   scroll-behavior: smooth;
 }
+
+.active-link {
+  background-color: rgb(213, 0, 0);
+  border-radius: 7px;
+}
+.active-link * {
+  color: white;
+}
+.swal2-container {
+  z-index: 2000 !important;
+}

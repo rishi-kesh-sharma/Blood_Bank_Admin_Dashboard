@@ -4,8 +4,9 @@ import * as Yup from "yup";
 import { registerBank } from "../../apiCalls/banks";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_BANK, SET_BANKS } from "../../actions/bankActions";
+import Swal from "sweetalert2";
 
-const AddBankForm = ({}) => {
+const AddBankForm = ({ setOpen }) => {
   const dispatch = useDispatch();
   const banksInfo = useSelector((state) => state?.bankReducer);
   let initialValues = {
@@ -17,7 +18,6 @@ const AddBankForm = ({}) => {
     address: "",
     organizationName: "",
     estd: "",
-    // socialMediaHandles: "",
     website: "",
   };
 
@@ -33,13 +33,22 @@ const AddBankForm = ({}) => {
     // socialMediaHandles: Yup.string(),
   });
 
-  const submitForm = async (values) => {
-    console.log(values);
+  const submitForm = async (values, { resetForm }) => {
     const response = await registerBank(values);
+    if (response.status != 200) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }
+    resetForm({ values: "" });
+    setOpen(false);
+    Swal.fire("Bank Added", "", "success");
     dispatch({ type: ADD_BANK, payload: values });
   };
   return (
-    <div className="w-[60%] max-w-[550px]">
+    <div className="w-[100%] ">
       <Formik
         validationSchema={schema}
         initialValues={initialValues}
@@ -54,55 +63,62 @@ const AddBankForm = ({}) => {
           handleBlur,
           isSubmitting,
         }) => (
-          <div className="update-bank ">
+          <div className="add-bank">
             <div className="form " style={{ maxWidth: "100%", padding: 0 }}>
               {/* Passing handleSubmit parameter tohtml form onSubmit property */}
-              <Form style={{ padding: "0" }}>
+              <Form
+                style={{
+                  padding: "0",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.3rem",
+                }}
+              >
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="bankname"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.bankname}
                   placeholder="Enter bankname"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.bankname && touched.bankname && errors.bankname) ||
                     (isSubmitting && errors.bankname)}
                 </p>
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="organizationName"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.organizationName}
                   placeholder="Enter organizationName"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.organizationName &&
                     touched.organizationName &&
                     errors.organizationName) ||
                     (isSubmitting && errors.organizationName)}
                 </p>
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="estd"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.estd}
                   placeholder="Enter estd"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.estd && touched.estd && errors.estd) ||
                     (isSubmitting && errors.estd)}
                 </p>
@@ -113,96 +129,100 @@ const AddBankForm = ({}) => {
                   onBlur={handleBlur}
                   value={values.socialMediaHandles}
                   placeholder="Enter socialMediaHandles"
-                  className="form-control"
-                  style={{ padding: "10px" }}
+                  style={{ padding: "10px" , fontSize: "1.2rem" }}
                 />
                  If validation is not passed show errors 
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.socialMediaHandles && touched.socialMediaHandles && errors.socialMediaHandles) ||
                     (isSubmitting && errors.socialMediaHandles)}
                 </p> */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="email"
                   name="email"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.email}
                   placeholder="Enter email "
-                  className="form-control "
                   id="email"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {errors.email && touched.email && errors.email}
                 </p>
 
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="address"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.address}
                   placeholder="Enter address"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.address && touched.address && errors.address) ||
                     (isSubmitting && errors.address)}
                 </p>
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="contact"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.contact}
                   placeholder="Enter contact"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.contact && touched.contact && errors.contact) ||
                     (isSubmitting && errors.contact)}
                 </p>
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="category"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.category}
                   placeholder="Enter category"
-                  className="form-control"
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.category && touched.category && errors.category) ||
                     (isSubmitting && errors.category)}
                 </p>
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
                 <input
+                  style={{ padding: "10px" }}
+                  className="w-[100%] outline-none border text-gray-700"
                   type="text"
                   name="website"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.website}
                   placeholder="Enter website"
-                  className="form-control "
-                  style={{ padding: "10px" }}
                 />
                 {/* If validation is not passed show errors */}
-                <p className="error">
+                <p className="text-red-500 text-sm pl-2">
                   {(errors.website && touched.website && errors.website) ||
                     (isSubmitting && errors.website)}
                 </p>
                 {/* Click on submit button to submit the form */}
-                <button type="submit p-0">Save</button>
+                <button
+                  type="submit"
+                  className="bg-red-500 text-gray-100 p-2 text-lg"
+                >
+                  Add
+                </button>
               </Form>
             </div>
           </div>

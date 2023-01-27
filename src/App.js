@@ -18,7 +18,6 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login.jsx";
 import Overview from "./components/Overview";
 import NoMatch from "./components/NoMatch";
-import AddBank from "./components/AddBank";
 import Messages from "./components/Messages";
 
 const store = createStore(rootReducer);
@@ -28,11 +27,10 @@ const App = () => {
       <BrowserRouter>
         <Messages />
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Dashboard />}>
             <Route index element={<Overview />} />
             <Route path="banks" element={<Banks />} />
-            <Route path="addBank" element={<AddBank />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
           <Route path="*" element={<NoMatch />} />

@@ -11,17 +11,18 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useState } from "react";
-import { interceptor } from "../../utils/utils";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteBank, updateBank } from "../../apiCalls/banks";
+import { deleteBank, getAllBanks, updateBank } from "../../apiCalls/banks";
 import { SET_BANKS } from "../../actions/bankActions";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import KeepMountedModal from "../Modal";
 import BankUpdateForm from "../forms/BankUpdateForm";
-
+import PaginatedTable from "./PaginatedTable";
+import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import Loading from "./../Loading";
 const columns = [
   { id: "sn", label: "SN", minWidth: 60 },
   { id: "avatar", label: "Avatar", minWidth: 80 },
@@ -32,8 +33,7 @@ const columns = [
   { id: "category", label: "Category", minWidth: 100 },
   { id: "website", label: "Website", minWidth: 100 },
   { id: "socials", label: "Socials", minWidth: 100 },
-  { id: "edit", label: "Edit", minWidth: 50 },
-  { id: "remove", label: "Remove", minWidth: 50 },
+  { id: "actions", label: "Actions", minWidth: 100 },
 ];
 
 function createData(
@@ -46,8 +46,7 @@ function createData(
   category,
   website,
   socials,
-  edit,
-  remove
+  actions
 ) {
   return {
     sn,
@@ -59,35 +58,91 @@ function createData(
     category,
     website,
     socials,
-    edit,
-    remove,
+    actions,
   };
 }
-export default function BanksTable({ currentPage }) {
-  const [open, setOpen] = useState(false);
-  const [editingUserId, setEditingUserId] = useState(null);
+export default function BanksTable({
+  openUpdateModal,
+  setOpenUpdateModal,
+  openAddModal,
+  setOpenAddModal,
+  setEditingUserId,
+}) {
+  const [loading, setLoading] = useState(false);
+  const rowsPerPageOptions = [5, 10, 15];
+  const [searchQuery, setSearchQuery] = useState("");
+
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(true);
-
   const banksInfo = useSelector((state) => state?.bankReducer);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
+  // rows per page options
+
+  // use effect that run when page and search query is changed
+  React.useEffect(() => {
+    const getBanksInfo = async () => {
+      setLoading(true);
+      const response = await getAllBanks(searchQuery, page + 1, rowsPerPage);
+      setLoading(false);
+      dispatch({ type: SET_BANKS, payload: response.data });
+    };
+    getBanksInfo();
+  }, [page, searchQuery, rowsPerPage]);
+
+  // handle change rows per page
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(+e.target.value);
+    setPage(0);
+  };
+
+  // handlle change page
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
+  // handle edit
   const handleEdit = async (_id) => {
-    setOpen(true);
+    setOpenUpdateModal(true);
     setEditingUserId(_id);
   };
-  const handleDelete = async (_id) => {
-    const response = await deleteBank(_id);
 
-    const banks = banksInfo.banks.filter((bank) => bank._id != _id);
-    const allBanksInfo = {
-      banks,
-      skip: banksInfo.skip,
-      prev: banksInfo.prev,
-      next: banksInfo.next,
-    };
-    dispatch({ type: SET_BANKS, payload: allBanksInfo });
+  // handle delete
+  const handleDelete = async (_id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await deleteBank(_id);
+        if (response.status != 200) {
+          return Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+        }
+
+        const banks = banksInfo.banks.filter((bank) => bank._id != _id);
+        const allBanksInfo = {
+          banks,
+          skip: banksInfo.skip,
+          prev: banksInfo.prev,
+          next: banksInfo.next,
+          count: banksInfo.count,
+        };
+        dispatch({ type: SET_BANKS, payload: allBanksInfo });
+
+        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      }
+    });
   };
 
   const rows = banksInfo?.banks?.map((bank, index) => {
@@ -102,9 +157,8 @@ export default function BanksTable({ currentPage }) {
       _id,
       profilePic,
     } = bank;
-    // const { facebook, instagram, twitter, linkedin } = socialMediaHandles && socialMediaHandles;
     return createData(
-      (currentPage - 1) * banksInfo.banks.length + index + 1,
+      page * rowsPerPage + index + 1,
       profilePic,
       bankname,
       address,
@@ -162,124 +216,56 @@ export default function BanksTable({ currentPage }) {
           ),
         },
       ],
-      <button
-        onClick={(e) => {
-          handleEdit(_id);
-        }}
-        style={{
-          background: "blue",
-          color: "white",
-          border: "none",
-          padding: "0.2rem 0.5rem",
-          cursor: "pointer",
-          borderRadius: "0.4rem",
-        }}
-      >
-        edit
-      </button>,
-      <button
-        onClick={(e) => handleDelete(_id)}
-        style={{
-          background: "red",
-          color: "white",
-          border: "none",
-          padding: "0.2rem 0.5rem",
-          cursor: "pointer",
-          borderRadius: "0.4rem",
-        }}
-      >
-        remove
-      </button>
+      [
+        {
+          name: "edit",
+          link: (
+            <FaEdit
+              className="mx-2 text-lg text-blue-900 cursor-pointer"
+              onClick={() => {
+                handleEdit(_id);
+              }}
+            />
+          ),
+        },
+        {
+          name: "delete",
+          link: (
+            <FaTrash
+              className="mx-2 text-lg text-red-500 cursor-pointer"
+              onClick={() => {
+                handleDelete(_id);
+              }}
+            />
+          ),
+        },
+      ]
     );
   });
 
   return (
     <Paper
       sx={{
-        width: "80vw",
         maxWidth: "3000px",
         overflow: "hidden",
-        marginTop: "5rem",
-        marginLeft: "17vw",
-        // padding: "0 2rem",
         overflow: "hidden",
       }}
     >
-      <TableContainer sx={{ maxHeight: 450, overflow: "auto" }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows &&
-              rows?.map((row, index) => {
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={(currentPage - 1) * banksInfo.banks.length + index + 1}
-                  >
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell
-                          // sx={{ padding: "6px" }}
-                          key={column.id}
-                          align="left"
-                        >
-                          {typeof value == "object" && Array.isArray(value) ? (
-                            <div style={{ display: "flex" }}>
-                              {value.map((item) => item.link)}
-                            </div>
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {/* <div
-        style={{
-          margin: " 0.5rem 0 0.5rem 90% ",
-          display: "flex",
-          gap: "1.5rem",
-        }}>
-        <ArrowBackIosNewIcon
-          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
-          onClick={handlePrevClick}
-        />
-        <ArrowForwardIosIcon
-          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
-          onClick={handleNextClick}
-        />
-      </div> */}
-      <>
-        {/* <Button variant="primary" onClick={() => setModalShow(true)}></Button> */}
-        <KeepMountedModal open={open} setOpen={setOpen}>
-          <BankUpdateForm editingUserId={editingUserId} setOpen={setOpen} />
-        </KeepMountedModal>
-      </>
+      <PaginatedTable
+        openAddModal={openAddModal}
+        setOpenAddModal={setOpenAddModal}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        rows={rows}
+        columns={columns}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        setPage={setPage}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+        rowsPerPageOptions={rowsPerPageOptions}
+        count={banksInfo?.count || rowsPerPage}
+      />
     </Paper>
-    // <div>
-    //   Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, culpa!
-    //   Aperiam, esse perferendis facere quaerat sapiente, aut ipsam ratione iure
-    //   fugiat aliquid veniam optio vitae, dolore accusamus similique fuga! Quos.
-    // </div>
   );
 }

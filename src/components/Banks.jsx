@@ -6,23 +6,38 @@ import { useEffect } from "react";
 import { SET_BANKS } from "./../actions/bankActions";
 import { getAllBanks } from "../apiCalls/banks";
 import Pagination from "./Pagination";
+import KeepMountedModal from "./Modal";
+import BankUpdateForm from "./forms/BankUpdateForm";
+import { IoMdAddCircle } from "react-icons/io";
+import AddBankForm from "./forms/AddBankForm";
 
 const Banks = () => {
-  // const [searchQuery, setSearchQuery] = useState("");
-  const [searchQuery, currentPage, setCurrentPage] = useOutletContext();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const getBanksInfo = async () => {
-      const banksInfo = await getAllBanks(searchQuery, currentPage);
-      console.log(banksInfo);
-      dispatch({ type: SET_BANKS, payload: banksInfo });
-    };
-    getBanksInfo();
-  }, [currentPage, searchQuery]);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
+
   return (
     <div>
-      <BanksTable currentPage={currentPage} />
-      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <BanksTable
+        openUpdateModal={openUpdateModal}
+        setOpenAddModal={setOpenAddModal}
+        openAddModal={openAddModal}
+        setOpenUpdateModal={setOpenUpdateModal}
+        setEditingUserId={setEditingUserId}
+      />
+      <>
+        <KeepMountedModal open={openUpdateModal} setOpen={setOpenUpdateModal}>
+          <BankUpdateForm
+            editingUserId={editingUserId}
+            setOpen={setOpenUpdateModal}
+          />
+        </KeepMountedModal>
+      </>
+      <>
+        <KeepMountedModal open={openAddModal} setOpen={setOpenAddModal}>
+          <AddBankForm setOpen={setOpenAddModal} />
+        </KeepMountedModal>
+      </>
     </div>
   );
 };

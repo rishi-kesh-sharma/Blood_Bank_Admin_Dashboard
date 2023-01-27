@@ -15,7 +15,7 @@ const Pagination = ({ currentPage, setCurrentPage }) => {
     setCurrentPage(currentPage + 1);
   };
   return (
-    <div className="h-[7rem] fixed left-[90%] mt-[1rem] flex justify-center items-center gap-[1rem] md:h-[3rem] md:justify-start md:w-[80%] mx-auto lg:h-[2rem]">
+    <div className="h-[7rem] fixed left-[92.2%] mt-[1rem] flex justify-center items-center gap-[1rem] md:h-[3rem] md:justify-start md:w-[80%] mx-auto lg:h-[2rem]">
       <button disabled={!prev && true} className="disabled:opacity-70">
         {" "}
         <BsArrowLeftSquare

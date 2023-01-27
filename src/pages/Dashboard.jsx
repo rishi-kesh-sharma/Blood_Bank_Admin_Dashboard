@@ -1,22 +1,48 @@
 import React, { useState } from "react";
-import { createTheme, Stack, Box, ThemeProvider } from "@mui/material";
+import {
+  createTheme,
+  Stack,
+  Box,
+  ThemeProvider,
+  Breadcrumbs,
+  Typography,
+} from "@mui/material";
 
 import { Navbar, Sidebar } from "../components";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SET_OVERVIEW } from "../actions/overviewActions";
 import { getOverview } from "../apiCalls/misc";
+import { checkTokenValidity } from "../apiCalls/auth";
+import { LOGIN } from "./../actions/authActions";
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   React.useEffect(() => {
-    const getOverviews = async () => {
-      const overviews = await getOverview();
-      dispatch({ type: SET_OVERVIEW, payload: overviews });
+    const checkAuthentication = async () => {
+      try {
+        const response = await checkTokenValidity();
+        if (!response.isValid) {
+          dispatch({
+            type: LOGIN,
+            payload: {
+              isAuthenticated: false,
+              authenticatedUser: {},
+            },
+          });
+          navigate("/login");
+        }
+      } catch (err) {
+        dispatch({
+          type: LOGIN,
+          payload: {
+            isAuthenticated: false,
+            authenticatedUser: {},
+          },
+        });
+      }
     };
-    getOverviews();
+    checkAuthentication();
   }, []);
   const { isAuthenticated } = useSelector((state) => state.authReducer);
 
@@ -28,7 +54,6 @@ const Dashboard = () => {
       mode,
     },
   });
-  // if (isAuthenticated) return <Navigate to="/dashboard/" />;
   return (
     <div>
       {isAuthenticated ? (
@@ -38,20 +63,16 @@ const Dashboard = () => {
             color={"text.primary"}
             sx={{ minHeight: "100vh" }}
           >
-            <Navbar
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
+            <Navbar />
             <Stack direction="row" gap="1rem" overflow={"hidden"}>
               <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
-              <Outlet context={[searchQuery, currentPage, setCurrentPage]} />
+
+              <Outlet />
             </Stack>
           </Box>
         </ThemeProvider>
       ) : (
-        <Navigate to="/" />
+        <Navigate to="/login" />
       )}
     </div>
   );

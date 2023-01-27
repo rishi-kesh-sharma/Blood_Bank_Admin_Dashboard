@@ -39,7 +39,6 @@ export const checkTokenValidity = async () => {
     return { isValid: true, user: response.data.user };
     // return response;
   } catch (err) {
-    console.log(err);
     return { isValid: false };
   }
 };

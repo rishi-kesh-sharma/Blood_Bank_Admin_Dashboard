@@ -1,7 +1,7 @@
 import { LOGIN, LOGOUT } from "./../actions/authActions";
 import { loginUser, logoutUser } from "../apiCalls/auth";
 const authReducer = (
-  state = { isAuthenticated: false, authenticatedUser: {} },
+  state = { isAuthenticated: true, authenticatedUser: {} },
   action
 ) => {
   switch (action.type) {

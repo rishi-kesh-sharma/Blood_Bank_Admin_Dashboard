@@ -32,7 +32,7 @@ const Login = () => {
             authenticatedUser: response.user,
           },
         });
-        navigate("/dashboard");
+        navigate("/");
       }
     };
     checkAuthentication();
@@ -51,7 +51,7 @@ const Login = () => {
           },
         });
         localStorage.setItem("auth-token", token);
-        navigate("/dashboard");
+        navigate("/");
       } else {
         dispatch({ type: SET_ERROR, payload: message });
       }

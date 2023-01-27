@@ -6,14 +6,13 @@ import Typography from "@mui/material/Typography";
 
 const style = {
   position: "absolute",
-  borderRadius: "20px",
+  borderRadius: "10px",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  maxHeight: "90vh",
+  // maxHeight: "90vh",
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
